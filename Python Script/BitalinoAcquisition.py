@@ -40,7 +40,7 @@ class GUI:
         self.console.insert(tk.END,"Squeeze to full strength \n")
         n = 0
         calibration_data = []
-        while n < 1000:
+        while n < 500:
             sample = self.recv_data()
             calibration_data.append(sample)
             n+=1
@@ -74,7 +74,9 @@ class GUI:
 
                 try:
                     # Envoyer un message au client
-                    client_socket.send(bytes(str(self.traitement_data(self,self.max_strength,self.inlet))+",", "utf-8"))
+                    message = str(self.traitement_data())
+                    client_socket.send(bytes(message+",", "utf-8"))
+                    self.console.insert(tk.END,message+"\n")
                 except:
                     self.console.insert(tk.END,"Client has disconnected \n")
                     break  # sortir de la boucle interne si le client est déconnecté
@@ -87,6 +89,7 @@ class GUI:
         self.console.insert(tk.END,"Looking for OpenSignals stream ...")
         os_stream = resolve_stream("name","OpenSignals")
         self.inlet = StreamInlet(os_stream[0])
+        self.console.insert(tk.END,"Stream found !")
 
 """
 def recv_data(inlet):
